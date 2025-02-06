@@ -4,73 +4,83 @@ from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from bot.bot import text_to_voice, get_weather
 
+import os
+import tkinter as tk
+from tkinter import ttk, messagebox
+from PIL import Image, ImageTk
+from bot.bot import text_to_voice, get_weather
+from tkinter import simpledialog
+
 # Ensure the script is executed from the project root
 base_dir = os.path.abspath(os.path.dirname(__file__))
 image_folder = os.path.normpath(os.path.join(base_dir, "../gui_images"))
 
-# Debugging output for paths
+# Image paths
 wave_image_path = os.path.normpath(os.path.join(image_folder, "wave.png"))
 cloud_image_path = os.path.normpath(os.path.join(image_folder, "cloud.png"))
 gmail_logo_path = os.path.normpath(os.path.join(image_folder, "gmail_logo.png"))
-
-print(f"[DEBUG] Wave image path: {wave_image_path}")
-print(f"[DEBUG] Cloud image path: {cloud_image_path}")
-print(f"[DEBUG] Gmail logo path: {gmail_logo_path}")
 
 # Create the main window
 root = tk.Tk()
 root.title("Chatbot Interface")
 root.geometry("600x500")
 root.minsize(600, 500)
+root.configure(bg="#2c3e50")
 
-# Load images after the Tkinter root window is created
+# Load images
 try:
-    wave_image = Image.open(wave_image_path).resize((40, 40), Image.Resampling.LANCZOS)
+    wave_image = Image.open(wave_image_path).resize((60, 60), Image.Resampling.LANCZOS)
     wave_photo = ImageTk.PhotoImage(wave_image)
 
-    cloud_image = Image.open(cloud_image_path).resize((40, 40), Image.Resampling.LANCZOS)
+    cloud_image = Image.open(cloud_image_path).resize((60, 60), Image.Resampling.LANCZOS)
     cloud_photo = ImageTk.PhotoImage(cloud_image)
 
-    gmail_logo = Image.open(gmail_logo_path).resize((20, 20), Image.Resampling.LANCZOS)
+    gmail_logo = Image.open(gmail_logo_path).resize((30, 30), Image.Resampling.LANCZOS)
     gmail_photo = ImageTk.PhotoImage(gmail_logo)
-    print("[DEBUG] Images loaded successfully")
 except FileNotFoundError as e:
     print(f"[DEBUG] Error loading image: {e}")
     exit(1)
 
-# Functions for handling actions
-def handle_text_to_voice():
-    text = text_input.get()
-    if not text.strip():
-        messagebox.showwarning("Input Error", "Please enter some text.")
-    else:
-        text_to_voice(text)
-        #messagebox.showinfo("Bot", "Text has been converted to voice.")
+# Function to open Text-to-Voice window
+def open_text_to_voice():
+    window = tk.Toplevel(root)
+    window.title("Text-to-Voice")
+    window.geometry("400x200")
+    window.configure(bg="#34495e")
+    ttk.Label(window, text="Enter Text:", background="#34495e", foreground="white", font=("Arial", 12)).pack(pady=10)
+    text_input = ttk.Entry(window, width=40)
+    text_input.pack(pady=10)
+    def convert_text():
+        text = text_input.get()
+        if text.strip():
+            text_to_voice(text)
+        else:
+            messagebox.showwarning("Input Error", "Please enter some text.")
+    ttk.Button(window, text="Convert to Voice", command=convert_text).pack(pady=10)
 
-def handle_weather():
-    city = city_input.get()
+# Function to open Weather Info window
+def open_weather_info():
+    city = tk.simpledialog.askstring("Weather Info", "Enter City:")
+    if not city:
+        return
+
     weather_info = get_weather(city)
-
-    # Check if weather information was retrieved successfully
     if "City not found" in weather_info or not isinstance(weather_info, str):
         messagebox.showerror("Error", weather_info)
         return
 
-    weather_window = tk.Toplevel()
+    weather_window = tk.Toplevel(root)
     weather_window.title("Weather Information")
-    weather_window.geometry("600x800")  # Set size of the new window
-
-    # Parse weather information into a list of tuples
+    weather_window.geometry("600x800")
+    
     weather_data = []
     for line in weather_info.split('\n'):
-        if line.strip() and ":" in line:  # Ensure line has a colon to split
+        if line.strip() and ":" in line:
             key, value = line.split(':', 1)
             weather_data.append((key.strip(), value.strip()))
 
-    # Extract weather description to determine background color
     description = next((value for key, value in weather_data if key == "Description"), "").lower()
-
-    # Define a dictionary mapping weather descriptions to colors
+    
     weather_colors = {
         "clear sky": "lightblue",
         "few clouds": "lightgrey",
@@ -82,78 +92,52 @@ def handle_weather():
         "snow": "white",
         "mist": "lightyellow"
     }
-
-    # Get the background color based on the description
-    bg_color = weather_colors.get(description, "lightblue")  # Default to lightblue
-
-    # Create a frame to hold the weather details with dynamic background color
+    
+    bg_color = weather_colors.get(description, "lightblue")
+    
     weather_frame = ttk.Frame(weather_window, padding=20)
     weather_frame.pack(fill='both', expand=True)
-    weather_frame.configure(style="Custom.TFrame")
-
-    # Define a custom style for the frame with the selected background color
-    style = ttk.Style()
-    style.configure("Custom.TFrame", background=bg_color)
-
-    # Create a grid table with labels
-    for i, (key, value) in enumerate(weather_data):
-        parameter_label = ttk.Label(weather_frame, text=key, font=("Arial", 12), anchor="w", background=bg_color)
-        parameter_label.grid(row=i, column=0, sticky="w", padx=10, pady=5)
-        value_label = ttk.Label(weather_frame, text=value, font=("Arial", 12), anchor="w", background=bg_color)
-        value_label.grid(row=i, column=1, sticky="w", padx=10, pady=5)
-
-    # Create an OK button to close the window
-    ok_button = ttk.Button(weather_window, text="OK", command=weather_window.destroy)
-    ok_button.pack(pady=10)
-
     
-# Configure grid for the main window
-root.columnconfigure(0, weight=1)
-root.rowconfigure(0, weight=1)
-root.rowconfigure(1, weight=0)
+    style = ttk.Style()
+    style.configure("Weather.TFrame", background=bg_color)
+    weather_frame.configure(style="Weather.TFrame")
+    
+    for i, (key, value) in enumerate(weather_data):
+        ttk.Label(weather_frame, text=key, font=("Arial", 12), anchor="w", background=bg_color).grid(row=i, column=0, sticky="w", padx=10, pady=5)
+        ttk.Label(weather_frame, text=value, font=("Arial", 12), anchor="w", background=bg_color).grid(row=i, column=1, sticky="w", padx=10, pady=5)
+    
+    ttk.Button(weather_window, text="OK", command=weather_window.destroy).pack(pady=10)
 
-# Create the main frame for the chatbot interface
-main_frame = ttk.Frame(root, padding=(10, 10, 10, 10))
-main_frame.grid(row=0, column=0, sticky="nsew")
-main_frame.columnconfigure(0, weight=0)
-main_frame.columnconfigure(1, weight=1)
-main_frame.columnconfigure(2, weight=0)
+# Main Frame
+main_frame = ttk.Frame(root, padding=(20, 20, 20, 20))
+main_frame.pack(expand=True)
+main_frame.configure(style="Custom.TFrame")
 
-# Add widgets for Text-to-Voice
-ttk.Label(main_frame, text="Enter Text for Text-to-Voice:").grid(column=0, row=0, sticky=tk.W, pady=10, padx=10)
-wav_label = ttk.Label(main_frame, image=wave_photo)
-wav_label.grid(column=0, row=1, sticky=tk.W, padx=10)
-text_input = ttk.Entry(main_frame, width=40)
-text_input.grid(column=1, row=1, sticky=(tk.W, tk.E), pady=10)
-text_to_voice_button = ttk.Button(main_frame, text="Convert to Voice", command=handle_text_to_voice)
-text_to_voice_button.grid(column=2, row=1, pady=10, padx=10)
+# Define custom styles
+style = ttk.Style()
+style.configure("Custom.TFrame", background="#2c3e50")
+style.configure("Custom.TButton", font=("Arial", 12), padding=10)
 
+# Buttons with images to open new windows
+btn1 = ttk.Button(main_frame, text=" Text-to-Voice", image=wave_photo, compound="left", style="Custom.TButton", command=open_text_to_voice)
+btn1.pack(pady=10)
 
-#Widget
-ttk.Label(main_frame, text="Enter City Name for Weather Info:").grid(column=0, row=2, sticky=tk.W, pady=10, padx=10)
-cloud_label = ttk.Label(main_frame, image=cloud_photo)
-cloud_label.grid(column=0, row=3, sticky=tk.W, padx=10)
-city_input = ttk.Entry(main_frame, width=50)
-city_input.grid(column=1, row=3, sticky=(tk.W, tk.E), pady=10)
-weather_button = ttk.Button(main_frame, text="Get Weather", command=handle_weather)
-weather_button.grid(column=2, row=3, pady=10, padx=10)
+btn2 = ttk.Button(main_frame, text=" Weather Info", image=cloud_photo, compound="left", style="Custom.TButton", command=open_weather_info)
+btn2.pack(pady=10)
 
-
-# Add a bottom frame for the details
+# Bottom frame for owner details
 bottom_frame = ttk.Frame(root, padding=(10, 5))
-bottom_frame.grid(row=1, column=0, sticky="ew")
-bottom_frame.columnconfigure(1, weight=1)
+bottom_frame.pack(fill="x")
+bottom_frame.configure(style="Custom.TFrame")
 
-# Add owner details to the bottom frame
-details_label = ttk.Label(bottom_frame, text="Owner: Shariar Ahamed", font=("Arial", 10))
-details_label.grid(column=0, row=0, sticky=tk.W, padx=5)
+details_label = ttk.Label(bottom_frame, text="Owner: Shariar Ahamed", font=("Arial", 10), background="#2c3e50", foreground="white")
+details_label.pack(side="left", padx=5)
 
-# Add Gmail logo and email address
-gmail_label = ttk.Label(bottom_frame, image=gmail_photo)
-gmail_label.grid(column=1, row=0, sticky=tk.W, padx=(5, 0))
+gmail_label = ttk.Label(bottom_frame, image=gmail_photo, background="#2c3e50")
+gmail_label.pack(side="left", padx=(5, 0))
 
-email_label = ttk.Label(bottom_frame, text="www.saaulfy@gmail.com", font=("Arial", 10), foreground="blue", cursor="hand2")
-email_label.grid(column=2, row=0, sticky=tk.W, padx=(5, 10))
+email_label = ttk.Label(bottom_frame, text="www.saaulfy@gmail.com", font=("Arial", 10), foreground="lightblue", cursor="hand2", background="#2c3e50")
+email_label.pack(side="left", padx=(5, 10))
 
 def open_email(event):
     import webbrowser
@@ -161,5 +145,5 @@ def open_email(event):
 
 email_label.bind("<Button-1>", open_email)
 
-# Start the main event loop
+# Start the GUI loop
 root.mainloop()
