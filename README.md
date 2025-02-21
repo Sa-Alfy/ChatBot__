@@ -1,42 +1,158 @@
-# ChatBot__
-I am new to Python programming and have always wanted to create a chatbot. While what I have made so far is not yet a fully functional chatbot, I am actively learning and improving my skills in Python. Suggestions and feedback are always welcome!  
+## Modern Assistant Interface
 
-I have used some code in the gui part from microsoft copilot. As i found it relaiable for this project.
+A feature-rich desktop application built with Python and Tkinter that combines multiple useful tools in a modern, gradient-styled interface.
 
-Tkinter Application - Feature Log and Improvements
-Overview
-This Tkinter application serves as an interactive GUI, incorporating various elements like buttons, scales, and listboxes. The application is designed to provide users with a simple yet functional interface for different interactions, including clicking buttons, submitting values from a scale, and selecting items from a listbox.
+![Assistant Interface Preview](screenshots/preview.png)
 
-Features Implemented :-
-Main Interface: A Tkinter window with a title and minimum size.
+## Features
 
-Button: A button labeled "Click me" that increments a counter and prints a message each time it is clicked.
+### Text-to-Voice Converter
+- Convert any text to speech
+- Clean and intuitive interface
+- Real-time conversion
 
-Label: A simple label displaying a "Hello" message.
+### Weather Information
+- Get detailed weather data for any city
+- Visual weather indicators with icons
+- Display temperature, humidity, wind, and more
+- Day/night cycle indicators
+- Dynamic background based on weather conditions
 
-Vertical Scale with Tick Intervals: A vertical scale ranging from 0 to 100 with tick intervals set to 5. The scale value can be submitted using a dedicated button.
+### YouTube Downloader
+- Download videos or extract audio
+- Progress tracking with speed indicator
+- Supports high-quality video downloads
+- Automatic format conversion
+- Organized downloads folder structure
 
-Listbox: A listbox that allows users to select items and print the selected values using a button.
+## Technical Details
 
-Necessary Changes Implemented :-
-Corrected Widget Initialization: Ensured that all widgets (like Label, Button, and Scale) are initialized correctly with appropriate parameters.
+### Built With
+- Python 3.8+
+- Tkinter for GUI
+- Custom styling and modern UI elements
+- Gradient backgrounds
+- Responsive design
 
-Function Definitions: Added necessary arguments (like event=None) to functions connected to widgets to handle extra arguments passed by Tkinter.
+### Core Libraries
+- `pyttsx3` for text-to-speech
+- `yt-dlp` for YouTube downloads
+- `Pillow` for image handling
+- `requests` for API communication
 
-Consistent Command Linking: Ensured that functions are correctly linked to widget commands without parentheses to prevent errors.
+## Installation
 
-Tick Intervals: Set accurate tick intervals for the vertical scale to ensure proper display of values.
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/ChatBot__-main.git
+cd ChatBot__-main
+```
 
-Custom Tick Marks: Manually added custom tick marks to the vertical scale for consistent intervals.
+2. Install required packages
+```bash
+pip install -r requirements.txt
+```
 
-Listbox Functionality: Created a function to handle listbox actions and print selected items.
+3. Install FFmpeg (required for YouTube downloads)
+- Windows: Download from [FFmpeg website](https://ffmpeg.org/download.html)
+- Linux: `sudo apt install ffmpeg`
+- macOS: `brew install ffmpeg`
 
-Future Improvements :-
-Error Handling: Implement better error handling and user feedback for invalid inputs or actions.
+4. Run the application
+```bash
+python -m ChatBot.gui.gui
+```
 
-Advanced Features: Add more advanced features like file dialogs, dynamic content updates, and additional widgets.
+## Usage
 
-Styling and Layout: Improve the GUI styling and layout for a more visually appealing and user-friendly experience.
+### Text-to-Voice
+1. Click the "Text-to-Voice" button
+2. Enter your text in the input field
+3. Click "Convert to Voice" to hear the audio
+
+### Weather Information
+1. Click the "Weather Info" button
+2. Enter a city name
+3. View detailed weather information with visual indicators
+
+### YouTube Downloader
+1. Click the "YouTube Downloader" button
+2. Paste a YouTube URL
+3. Select video or audio format
+4. Click download and monitor progress
+5. Find downloaded files in the downloads folder
+
+## Project Structure
+```
+ChatBot__-main/
+├── ChatBot/
+│   ├── gui/
+│   │   ├── __init__.py
+│   │   ├── gui.py
+│   │   └── custom_widgets.py
+│   ├── bot/
+│   │   ├── __init__.py
+│   │   └── bot.py
+│   └── gui_images/
+│       ├── wave.png
+│       ├── cloud.png
+│       ├── gmail_logo.png
+│       ├── youtube_logo.png
+│       └── weather_icons/
+├── downloads/
+│   ├── videos/
+│   └── audio/
+├── requirements.txt
+└── README.md
+```
+
+## Configuration
+
+### Weather API
+The application uses OpenWeatherMap API. To use your own API key:
+1. Get an API key from [OpenWeatherMap](https://openweathermap.org/api)
+2. Replace the API key in `bot.py`
+
+### Download Locations
+- Videos are saved to: `/downloads/videos/`
+- Audio is saved to: `/downloads/audio/`
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Credits
+- Weather data provided by OpenWeatherMap
+- YouTube downloading powered by yt-dlp
+- Icons and visual elements designed for modern UI
+
+## Credits
+- Weather data provided by OpenWeatherMap
+- YouTube downloading powered by yt-dlp
+- Icons and visual elements designed for modern UI
+- GUI development assistance from Microsoft Copilot
+- Additional GUI improvements and feature implementations by GitHub Copilot
+
+## Author
+Shariar Ahamed  
+Email: www.saaulfy@gmail.com
+
+## Acknowledgments
+- Thanks to the Python community for the amazing libraries
+- Special thanks to Microsoft Copilot for initial GUI development assistance
+- Thanks to GitHub Copilot for improved UI design, code organization, and feature implementation
+
+## Development History
+- Initial GUI implementation with Microsoft Copilot
+- Enhanced features and modern UI design with GitHub Copilot:
+  - Gradient backgrounds and modern styling
+  - Weather display improvements
+  - YouTube download progress tracking
+  - Improved file organization
+  - Better error handling
+  - Download directory management
 
 Data Persistence: Implement features to save user inputs and settings between sessions.
 
