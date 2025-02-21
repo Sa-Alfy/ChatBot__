@@ -44,7 +44,7 @@ A feature-rich desktop application built with Python and Tkinter that combines m
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/ChatBot__-main.git
+git clone (https://github.com/Sa-Alfy/ChatBot__.git)
 cd ChatBot__-main
 ```
 
