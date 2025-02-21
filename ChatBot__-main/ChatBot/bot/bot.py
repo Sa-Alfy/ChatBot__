@@ -14,7 +14,7 @@ def text_to_voice(text):
         print(f" Error in text-to-voice: {e}")
 
 def get_weather(city):
-    api_key = "dd397ff127f49add6a5356970ff20ad1"  # Replace with your OpenWeatherMap API key
+    api_key = ""  # Replace with your OpenWeatherMap API key
     base_url = "http://api.openweathermap.org/data/2.5/weather?"
     complete_url = f"{base_url}q={city}&appid={api_key}"
     response = requests.get(complete_url)
